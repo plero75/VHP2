@@ -35,38 +35,44 @@ html, body {
   font-size: 1.11em;
   position: relative;
   margin-bottom: 20px;
-  padding: 0; /* important pour les panneaux */
+  padding: 0;
 }
 .rer-card { border-top: 6px solid #e2001a; }
 .bus-card { border-top: 6px solid #009f4d; }
 
-/* PANEL générique */
-.generic-panel-header {
+.panel-header {
   display: flex; align-items: center; justify-content: space-between;
   background: #222; color: #fff; font-size: 1.18em; font-weight: bold;
   padding: 12px 24px; border-radius: 18px 18px 0 0;
 }
-.generic-panel-icon { height: 38px; margin-right: 12px; }
-.generic-panel-line {
+.panel-icon { height: 38px; margin-right: 12px; }
+.panel-line {
   border-radius: 8px; padding: 2px 12px;
   margin: 0 10px 0 0; font-weight: bold; font-size: 1.1em;
 }
-.generic-panel-time { font-size: 1.1em; }
-.generic-panel-stops { padding: 22px 24px 14px 24px; }
-.generic-panel-stop {
-  display: flex; align-items: center; margin-bottom: 18px;
-  border-bottom: 1px solid #eee2; padding-bottom: 12px;
+.panel-time { font-size: 1.1em; }
+.sens-title {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #ffd900;
+  margin-top: 18px;
+  margin-bottom: 8px;
 }
-.generic-panel-stop:last-child { border-bottom: none; }
-.generic-panel-arrival { font-size: 1.7em; font-weight: bold; color: #ffd900; width: 95px; }
-.generic-panel-stopname { font-size: 1.3em; font-weight: bold; flex: 1; }
-.generic-panel-modes img { height: 28px; margin-right: 6px; vertical-align: middle; }
+.panel-stops { padding: 0 24px 10px 24px; }
+.panel-stop {
+  display: flex; align-items: center; margin-bottom: 10px;
+  border-bottom: 1px solid #eee2; padding-bottom: 8px;
+}
+.panel-stop:last-child { border-bottom: none; }
+.panel-arrival { font-size: 1.2em; font-weight: bold; color: #ffd900; width: 85px; }
+.panel-stopname { font-size: 1.1em; font-weight: bold; flex: 1; }
+.panel-modes img { height: 24px; margin-right: 6px; vertical-align: middle; }
 .status.warning { color: #b91c1c; font-weight: bold; background: #ffeef0; border-radius: 10px; padding: 4px 9px;}
 @media (max-width: 750px) {
   .dashboard-grid { grid-template-columns: 1fr; gap: 4vw; }
   .dashboard-card { padding: 0; }
-  .generic-panel-header { font-size: 1em; padding: 7px 8px; }
-  .generic-panel-stops { padding: 12px 8px; }
-  .generic-panel-arrival { font-size: 1em; width: 62px;}
-  .generic-panel-stopname { font-size: 1em; }
+  .panel-header { font-size: 1em; padding: 7px 8px; }
+  .panel-stops { padding: 0 8px 8px 8px; }
+  .panel-arrival { font-size: 1em; width: 55px;}
+  .panel-stopname { font-size: 1em; }
 }
