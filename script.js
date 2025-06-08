@@ -1,36 +1,36 @@
 const PROXY_URL = 'https://ratp-proxy.hippodrome-proxy42.workers.dev/';
 const PANELS = [
   {
-    id: "panel-rer-a",
+    id: "rer-content",
     line: "RER A",
     color: "#e2001a",
     icon: "img/picto-rer-a.svg",
     monitoringRef: "STIF:StopArea:SP:43135:", // Vincennes
     directions: [
-      { name: "Vers Paris", dests: ["PARIS", "Châtelet", "La Défense", "Saint-Germain", "Cergy", "Poissy"] },
-      { name: "Vers Boissy/Sucy", dests: ["Boissy", "Sucy", "Marne-la-Vallée", "Chessy"] }
+      { name: "Vers Paris", mots: ["Paris", "Châtelet", "La Défense", "Saint-Germain", "Cergy", "Poissy"] },
+      { name: "Vers Boissy/Sucy", mots: ["Boissy", "Sucy", "Chessy", "Marne-la-Vallée"] }
     ]
   },
   {
-    id: "panel-bus-77",
+    id: "bus77-content",
     line: "77",
     color: "#009f4d",
     icon: "img/picto-bus-77.svg",
     monitoringRef: "STIF:StopArea:SP:463641:", // Vincennes
     directions: [
-      { name: "Vers Joinville", dests: ["Joinville", "Gare de Joinville"] },
-      { name: "Vers Créteil", dests: ["Créteil", "Pointe du Lac"] }
+      { name: "Vers Joinville", mots: ["Joinville", "Gare de Joinville"] },
+      { name: "Vers Créteil", mots: ["Créteil", "Pointe du Lac"] }
     ]
   },
   {
-    id: "panel-bus-201",
+    id: "bus201-content",
     line: "201",
     color: "#009f4d",
     icon: "img/picto-bus-201.svg",
     monitoringRef: "STIF:StopArea:SP:463644:", // Vincennes
     directions: [
-      { name: "Vers Nogent", dests: ["Nogent", "Gare de Nogent"] },
-      { name: "Vers Maisons-Alfort", dests: ["Maisons-Alfort"] }
+      { name: "Vers Nogent", mots: ["Nogent", "Gare de Nogent"] },
+      { name: "Vers Maisons-Alfort", mots: ["Maisons-Alfort"] }
     ]
   }
 ];
@@ -52,25 +52,36 @@ async function renderPanel(panel) {
     return;
   }
 
-  // Regroupement par sens (on compare la destination)
+  // Regroupement par sens (on compare la destination, insensible à la casse)
   let stopsByDir = panel.directions.map(dir => {
     // Pour chaque sens, sélectionne les passages dont la destination matche
     const stops = visits
       .filter(v => {
-        const dest = (v.MonitoredVehicleJourney?.DestinationName?.value || "").toLowerCase();
-        return dir.dests.some(d => dest.includes(d.toLowerCase()));
+        const dest =
+          v.MonitoredVehicleJourney?.DestinationName?.[0]?.value ||
+          v.MonitoredVehicleJourney?.MonitoredCall?.DestinationDisplay?.[0]?.value ||
+          "";
+        return dir.mots.some(mot => dest.toLowerCase().includes(mot.toLowerCase()));
       })
       .slice(0, 3)
       .map(v => {
-        const aimed = v.MonitoredVehicleJourney?.MonitoredCall?.AimedArrivalTime;
+        const call = v.MonitoredVehicleJourney?.MonitoredCall || {};
+        const stopName =
+          call.StopPointName?.[0]?.value ||
+          call.StopPointName?.value ||
+          "?";
+        const dest =
+          v.MonitoredVehicleJourney?.DestinationName?.[0]?.value ||
+          call.DestinationDisplay?.[0]?.value ||
+          "?";
+        const aimed = call.ExpectedArrivalTime || call.AimedArrivalTime;
         const dt = aimed ? new Date(aimed) : null;
         const mins = dt ? Math.round((dt - new Date()) / 60000) : null;
-        const dest = v.MonitoredVehicleJourney?.DestinationName?.value || "?";
         return `
           <div class="panel-stop">
             <span class="panel-arrival">${mins !== null ? (mins > 0 ? `${mins} min` : "à l'instant") : "?"}</span>
-            <span class="panel-stopname">${dest}</span>
-            <span class="panel-modes"><img src="${panel.icon}" alt="${panel.line}"/></span>
+            <span class="panel-stopname">${stopName}</span>
+            <span class="panel-dest">→ ${dest}</span>
           </div>
         `;
       }).join("");
@@ -83,16 +94,16 @@ async function renderPanel(panel) {
 
   // Affichage du panneau
   container.innerHTML = `
-    <div class="panel-header">
-      <img src="${panel.icon}" class="panel-icon" alt="${panel.line}"/>
-      <span class="panel-line" style="background:${panel.color}; color:#fff;">${panel.line}</span>
+    <div class="panel-header" style="background: #222; color: #fff; font-size: 1.18em; font-weight: bold; padding: 12px 24px; border-radius: 18px 18px 0 0; display:flex;align-items:center;justify-content:space-between;">
+      <img src="${panel.icon}" class="panel-icon" alt="${panel.line}" style="height:38px; margin-right:12px;"/>
+      <span class="panel-line" style="background:${panel.color}; color:#fff; border-radius:8px; padding:2px 12px; margin:0 10px 0 0; font-weight:bold; font-size:1.1em;">${panel.line}</span>
       ${panel.line}
       <span class="panel-time" id="${panel.id}-heure">${heure}</span>
     </div>
-    <div class="panel-stops">
+    <div class="panel-stops" style="padding:0 24px 10px 24px;">
       ${stopsByDir.map(dir =>
         `<div>
-          <div class="sens-title">${dir.name}</div>
+          <div class="sens-title" style="font-size:1.1em;font-weight:bold;color:#ffd900;margin-top:18px;margin-bottom:8px;">${dir.name}</div>
           ${dir.stops || `<div class="status warning">Aucun passage imminent</div>`}
         </div>`).join("")}
     </div>
