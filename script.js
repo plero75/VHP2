@@ -80,22 +80,34 @@ async function fetchAndDisplayAllVelibStations() {
         const allStops = onward.map(oc =>
           oc.StopPointName?.[0]?.value || oc.StopPointName?.value || "?"
         );
-        // Correction : OnwardCalls vide ? on montre au moins le stopName
-        if (allStops.length === 0 && stopName !== "?") allStops.unshift(stopName);
+// Correction : OnwardCalls vide ? on montre au moins le stopName
+if (allStops.length === 0 && stopName !== "?") allStops.unshift(stopName);
 
-        let stopClass = "panel-stop";
-        if (isCanceled) stopClass += " canceled";
-        else if (isDelayed) stopClass += " delayed";
+let stopClass = "panel-stop";
+if (isCanceled) stopClass += " canceled";
+else if (isDelayed) stopClass += " delayed";
 
-        return `
-          <div class="${stopClass}">
-            <span class="panel-arrival">
-              ${mins !== null ? (mins > 0 ? `${mins} min` : "à l'instant") : "?"}
-              ${isDelayed && !isCanceled ? '<span class="retard-badge">retard</span>' : ""}
-              ${isCanceled ? '<span class="canceled-badge">supprimé</span>' : ""}
-            </span>
-            <span class="panel-stopname">
-              ${stopName}
+return `
+  <div class="${stopClass}">
+    <span class="panel-arrival">
+      ${mins !== null ? (mins > 0 ? `${mins} min` : "à l'instant") : "?"}
+      ${isDelayed && !isCanceled ? '<span class="retard-badge">retard</span>' : ""}
+      ${isCanceled ? '<span class="canceled-badge">supprimé</span>' : ""}
+    </span>
+    <span class="panel-stopname">
+      ${stopName}
+      ${voie ? `<span class="panel-voie">${voie}</span>` : ""}
+    </span>
+    <span class="panel-dest">→ ${dest}</span>
+    ${allStops.length > 0 ? `
+      <div class="panel-desserte">
+        <div class="desserte-scroll">
+          ${allStops.map(s => `<span class="gare">${s}</span>`).join('<span class="sep"> • </span>')}
+        </div>
+      </div>
+    ` : ""}
+  </div>
+`;
               ${voie ? `<span class="panel-voie">${voie}</span>` : ""}
             </span>
             <span class="panel-dest">→ ${dest}</span>
