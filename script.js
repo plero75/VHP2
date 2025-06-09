@@ -5,7 +5,7 @@ const PANELS = [
     line: "RER A",
     color: "#e2001a",
     icon: "img/picto-rer-a.svg",
-    monitoringRef: "STIF:StopArea:SP:43135:", // Vincennes
+    monitoringRef: "STIF:StopArea:SP:43135:",
     directions: [
       { name: "Vers Paris", mots: ["Paris", "Châtelet", "La Défense", "Saint-Germain", "Cergy", "Poissy"] },
       { name: "Vers Boissy/Sucy", mots: ["Boissy", "Sucy", "Chessy", "Marne-la-Vallée"] }
@@ -16,7 +16,7 @@ const PANELS = [
     line: "77",
     color: "#009f4d",
     icon: "img/picto-bus-77.svg",
-    monitoringRef: "STIF:StopArea:SP:463641:", // Vincennes
+    monitoringRef: "STIF:StopArea:SP:463641:",
     directions: [
       { name: "Vers Joinville", mots: ["Joinville", "Gare de Joinville"] },
       { name: "Vers Créteil", mots: ["Créteil", "Pointe du Lac"] }
@@ -27,13 +27,58 @@ const PANELS = [
     line: "201",
     color: "#009f4d",
     icon: "img/picto-bus-201.svg",
-    monitoringRef: "STIF:StopArea:SP:463644:", // Vincennes
+    monitoringRef: "STIF:StopArea:SP:463644:",
     directions: [
       { name: "Vers Nogent", mots: ["Nogent", "Gare de Nogent"] },
       { name: "Vers Maisons-Alfort", mots: ["Maisons-Alfort"] }
     ]
   }
 ];
+
+// --- Vélib config ---
+const velibStations = [
+  { code: "21005", container: "velib-vincennes", name: "Vincennes - République" },
+  { code: "12036", container: "velib-breuil", name: "Château de Vincennes - Breuil" }
+];
+
+// --- Vélib affichage ---
+async function fetchAndDisplayAllVelibStations() {
+  const url = "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/velib-disponibilite-en-temps-reel/exports/json";
+  let stations;
+  try {
+    const res = await fetch(url, { cache: "no-store" });
+    stations = await res.json();
+    if (!Array.isArray(stations)) throw new Error("Réponse Vélib' inattendue");
+  } catch (e) {
+    velibStations.forEach(sta => {
+      const el = document.getElementById(sta.container);
+      if (el) el.innerHTML = `<div class="status warning">Erreur Vélib (Paris) : ${e.message}</div>`;
+    });
+    return;
+  }
+  for (const sta of velibStations) {
+    const el = document.getElementById(sta.container);
+    if (!el) continue;
+    let station;
+    if (sta.code) {
+      station = stations.find(s => s.stationcode === sta.code);
+    } else if (sta.name) {
+      station = stations.find(s => (s.name || "").toLowerCase() === (sta.name || "").toLowerCase());
+    }
+    if (!station) {
+      el.innerHTML = `<div class="status warning">Station Vélib’ non trouvée.</div>`;
+      continue;
+    }
+    el.innerHTML = `
+      <b>${station.name}</b><br>
+      Vélos mécaniques dispo : ${station.mechanical ?? "?"}<br>
+      Vélos électriques dispo : ${station.ebike ?? "?"}<br>
+      Bornes libres : ${station.numdocksavailable ?? "?"}<br>
+      Vélos totaux disponibles : ${station.numbikesavailable ?? "?"}<br>
+      État : ${station.status === "OPEN" ? "Ouverte" : "Fermée"}
+    `;
+  }
+}
 
 async function renderPanel(panel) {
   const container = document.getElementById(panel.id);
@@ -88,6 +133,7 @@ async function renderPanel(panel) {
         const allStops = onward.map(oc =>
           oc.StopPointName?.[0]?.value || oc.StopPointName?.value || "?"
         );
+        // Correction : OnwardCalls vide ? on montre au moins le stopName
         if (allStops.length === 0 && stopName !== "?") allStops.unshift(stopName);
 
         let stopClass = "panel-stop";
@@ -142,6 +188,7 @@ async function renderPanel(panel) {
 // Rafraîchissement et heure
 function renderAllPanels() {
   for(const panel of PANELS) renderPanel(panel);
+  fetchAndDisplayAllVelibStations();
 }
 setInterval(renderAllPanels, 60000);
 renderAllPanels();
