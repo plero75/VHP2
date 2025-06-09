@@ -1,121 +1,52 @@
-.panel-stop {
+.velib-header {
+  font-weight: bold;
+  padding-bottom: 2px;
+  font-size: 1.1em;
+}
+.velib-nom { font-size: 1.07em; }
+.velib-infos {
   display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #eee2;
-  padding-bottom: 8px;
-  background: #0c5da5;
-  transition: background 0.2s;
-}
-.panel-stop:nth-child(2n) { background: #043a6b; }
-.panel-stop:last-child { border-bottom: none; }
-.panel-stop > .panel-arrival, .panel-stop > .panel-stopname, .panel-stop > .panel-dest {
-  display: block;
-}
-.panel-arrival {
-  font-size: 1.18em;
-  font-weight: bold;
-  color: #ffd900;
-  width: 100%;
-  font-family: 'Roboto Mono', 'Menlo', monospace;
-}
-.panel-stopname {
-  font-size: 1.13em;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-  color: #fff;
-  text-shadow: 1px 1px 0 #0005;
+  flex-wrap: wrap;
+  gap: 7px;
   margin-top: 2px;
-  margin-bottom: 2px;
-  display: flex;
-  align-items: center;
+  font-size: 1.07em;
 }
-.panel-dest {
-  font-size: 1em;
-  color: #a7e1ff;
-  font-style: italic;
-  letter-spacing: 0.2px;
-  margin-bottom: 2px;
-}
-.panel-voie {
-  display: inline-block;
-  min-width: 1.1em;
-  border: 0.08em solid #ccc;
-  border-radius: 3px;
-  font-size: 120%;
-  background: #fff;
-  color: #0c5da5;
-  font-weight: bold;
-  padding: 0 7px;
-  margin-left: 1em;
-  letter-spacing: -1px;
-}
-.panel-stop.delayed {
-  background: #ff9800 !important;
-  color: #fff;
-}
-.panel-stop.delayed .panel-arrival,
-.panel-stop.delayed .panel-stopname,
-.panel-stop.delayed .panel-dest {
-  color: #fff3e0 !important;
-}
-.retard-badge {
-  font-size: 0.85em;
-  color: #fff;
-  background: #ff9800;
-  border-radius: 6px;
-  padding: 2px 7px;
-  margin-left: 5px;
-  font-weight: bold;
-}
-.panel-stop.canceled {
-  background: #b40404 !important;
-  color: #fff !important;
-}
-.panel-stop.canceled .panel-arrival,
-.panel-stop.canceled .panel-stopname,
-.panel-stop.canceled .panel-dest {
-  color: #ffd1d1 !important;
-  text-decoration: line-through;
-}
-.canceled-badge {
-  font-size: 0.85em;
-  color: #fff;
-  background: #b40404;
-  border-radius: 6px;
-  padding: 2px 7px;
-  margin-left: 5px;
-  font-weight: bold;
-}
-.panel-stop:not(.delayed):not(.canceled) .panel-arrival {
-  color: #ffd900;
-}
-
-/* Desserte (liste des arrêts à venir) */
+.velib-item { background: #17345d; border-radius: 7px; padding: 2px 8px; color: #fff; }
 .panel-desserte {
-  margin-top: 0.3em;
-  font-size: 1em;
-  color: #86b3de;
-  white-space: nowrap;
+  margin-top: 4px;
   overflow: hidden;
-  width: 100%;
+  height: 1.7em;
 }
-.panel-desserte .gare {
-  font-weight: 500;
-  margin-right: 0.3em;
-}
-.panel-desserte .sep {
-  color: #ffd900;
-  font-weight: bold;
-  margin: 0 0.35em;
-}
-.panel-stop .panel-desserte marquee {
-  width: 100%;
+.desserte-scroll {
   display: inline-block;
+  white-space: nowrap;
+  animation: scroll-desserte 12s linear infinite;
 }
-
-/* Responsive */
-@media (max-width: 750px) {
-  .panel-stopname, .panel-arrival { font-size: 1em; }
-  .panel-dest { font-size: 0.95em; }
+@keyframes scroll-desserte {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-60%); }
 }
+.gare { font-weight: 500; color: #fff5; }
+.sep { color: #fff9; margin: 0 5px; }
+.panel-header img.panel-icon {
+  height: 1.5em;
+  vertical-align: middle;
+  margin-right: 0.5em;
+}
+.panel-line {
+  padding: 0.1em 0.5em;
+  border-radius: 0.6em;
+  color: #fff;
+  font-weight: 700;
+  margin-right: 0.5em;
+}
+.panel-arrival { font-size: 1.2em; font-weight: bold; }
+.panel-stopname { font-size: 1.1em; }
+.panel-dest { font-style: italic; color: #fff8; margin-left: 0.5em; }
+.retard-badge { color: #222; background: #ffc107; border-radius: 4px; padding: 0 5px; margin-left: 8px; }
+.canceled-badge { color: #fff; background: #d32f2f; border-radius: 4px; padding: 0 5px; margin-left: 8px; }
+.sens-title { font-weight: bold; margin: 7px 0 2px 0; }
+.panel-stop { background: #073c6b; margin-bottom: 8px; border-radius: 8px; padding: 8px; color: #fff; }
+.panel-stop.delayed { background: #ffa600; color: #222; }
+.panel-stop.canceled { background: #b71c1c; color: #fff; }
+.status.warning { color: #fff; background: #e57373; border-radius: 5px; padding: 4px 7px; margin: 4px 0; }
