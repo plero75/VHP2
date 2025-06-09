@@ -37,8 +37,8 @@ const PANELS = [
 
 // --- Vélib config ---
 const velibStations = [
-  { code: "21005", container: "velib-vincennes", name: "Vincennes - République" },
-  { code: "12036", container: "velib-breuil", name: "Château de Vincennes - Breuil" }
+  { code: "12163", container: "velib-vincennes", name: "Vincennes - République" },
+  { code: "12128", container: "velib-breuil", name: "Château de Vincennes - Breuil" }
 ];
 
 // --- Vélib affichage ---
