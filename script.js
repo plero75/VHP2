@@ -52,83 +52,30 @@ async function fetchAndDisplayAllVelibStations() {
   } catch (e) {
     velibStations.forEach(sta => {
       const el = document.getElementById(sta.container);
-      if (el) el.innerHTML = `<div class="status warning">Erreur Vélib (Paris) : ${e.message}</div>`;
+      if (el) el.innerHTML = `<div class="status warning">Erreur Vélib : ${e.message}</div>`;
     });
     return;
   }
   for (const sta of velibStations) {
     const el = document.getElementById(sta.container);
     if (!el) continue;
-    let station;
-    if (sta.code) {
-      station = stations.find(s => s.stationcode === sta.code);
-    } else if (sta.name) {
-      station = stations.find(s => (s.name || "").toLowerCase() === (sta.name || "").toLowerCase());
-    }
+    let station = stations.find(s => s.stationcode === sta.code);
     if (!station) {
       el.innerHTML = `<div class="status warning">Station Vélib’ non trouvée.</div>`;
       continue;
     }
     el.innerHTML = `
-      <b>${station.name}</b><br>
-      Vélos mécaniques dispo : ${station.mechanical ?? "?"}<br>
-      Vélos électriques dispo : ${station.ebike ?? "?"}<br>
-      Bornes libres : ${station.numdocksavailable ?? "?"}<br>
-      Vélos totaux disponibles : ${station.numbikesavailable ?? "?"}<br>
-      État : ${station.status === "OPEN" ? "Ouverte" : "Fermée"}
+      <div class="velib-header">
+        <span class="velib-nom">${station.name}</span>
+      </div>
+      <div class="velib-infos">
+        <span class="velib-item">🚲 <b>${station.mechanical ?? "?"}</b> mécaniques</span>
+        <span class="velib-item">⚡ <b>${station.ebike ?? "?"}</b> électriques</span>
+        <span class="velib-item">🅿️ <b>${station.numdocksavailable ?? "?"}</b> bornes libres</span>
+       </div>
     `;
   }
 }
-
-async function renderPanel(panel) {
-  const container = document.getElementById(panel.id);
-  if (!container) return;
-
-  const apiBase = "https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring";
-  const apiUrl = `${apiBase}?MonitoringRef=${encodeURIComponent(panel.monitoringRef)}`;
-  const url = `${PROXY_URL}?url=${encodeURIComponent(apiUrl)}`;
-  let visits = [];
-  try {
-    const res = await fetch(url, {cache: "no-store"});
-    const data = await res.json();
-    visits = (data.Siri?.ServiceDelivery?.StopMonitoringDelivery?.[0]?.MonitoredStopVisit) || [];
-  } catch (e) {
-    container.innerHTML = `<div class="status warning">⛔ Données indisponibles (${e.message})</div>`;
-    return;
-  }
-
-  let stopsByDir = panel.directions.map(dir => {
-    const stops = visits
-      .filter(v => {
-        const dest =
-          v.MonitoredVehicleJourney?.DestinationName?.[0]?.value ||
-          v.MonitoredVehicleJourney?.MonitoredCall?.DestinationDisplay?.[0]?.value ||
-          "";
-        return dir.mots.some(mot => dest.toLowerCase().includes(mot.toLowerCase()));
-      })
-      .slice(0, 3)
-      .map(v => {
-        const call = v.MonitoredVehicleJourney?.MonitoredCall || {};
-        const onward = v.MonitoredVehicleJourney?.OnwardCalls?.OnwardCall || [];
-        const stopName =
-          call.StopPointName?.[0]?.value ||
-          call.StopPointName?.value ||
-          "?";
-        const dest =
-          v.MonitoredVehicleJourney?.DestinationName?.[0]?.value ||
-          call.DestinationDisplay?.[0]?.value ||
-          "?";
-        const aimed = call.AimedArrivalTime || call.AimedDepartureTime;
-        const expected = call.ExpectedArrivalTime || call.ExpectedDepartureTime;
-        const dtAimed = aimed ? new Date(aimed) : null;
-        const dtExpected = expected ? new Date(expected) : null;
-        const mins = dtExpected && dtAimed ? Math.round((dtExpected - new Date()) / 60000) : null;
-        const isDelayed = dtAimed && dtExpected && (dtExpected - dtAimed > 2 * 60000);
-        const isCanceled = v.MonitoredVehicleJourney?.TrainStatus === "cancelled"
-          || v.MonitoredVehicleJourney?.JourneyNote?.some(note =>
-              (note.value || "").toLowerCase().includes("supprim"));
-        const voie = v.MonitoredVehicleJourney?.TrainNumbers?.[0]?.TrainNumber || call.ArrivalPlatformName?.[0]?.value || "";
-
         // Liste des arrêts à venir (OnwardCalls)
         const allStops = onward.map(oc =>
           oc.StopPointName?.[0]?.value || oc.StopPointName?.value || "?"
