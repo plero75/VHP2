@@ -1,78 +1,121 @@
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  background: #10141a;
-  color: #fff;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  width: 100vw;
-  min-height: 100vh;
-}
-.dashboard {
-  min-height: 100vh;
-  width: 100vw;
+.panel-stop {
   display: flex;
   flex-direction: column;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #eee2;
+  padding-bottom: 8px;
+  background: #0c5da5;
+  transition: background 0.2s;
 }
-.dashboard-grid {
-  flex: 1 1 auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 2.5vw;
-  width: 100vw;
-  padding: 3vw 2vw 2vw 2vw;
-  align-items: stretch;
-  box-sizing: border-box;
+.panel-stop:nth-child(2n) { background: #043a6b; }
+.panel-stop:last-child { border-bottom: none; }
+.panel-stop > .panel-arrival, .panel-stop > .panel-stopname, .panel-stop > .panel-dest {
+  display: block;
 }
-.dashboard-card {
-  background: #14203a;
-  border-radius: 18px;
-  box-shadow: 0 6px 32px #0005;
-  min-height: 140px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  font-size: 1.11em;
-  position: relative;
-  margin-bottom: 20px;
-  padding: 0;
-}
-.rer-card { border-top: 6px solid #e2001a; }
-.bus-card { border-top: 6px solid #009f4d; }
-
-.panel-header {
-  display: flex; align-items: center; justify-content: space-between;
-  background: #222; color: #fff; font-size: 1.18em; font-weight: bold;
-  padding: 12px 24px; border-radius: 18px 18px 0 0;
-}
-.panel-icon { height: 38px; margin-right: 12px; }
-.panel-line {
-  border-radius: 8px; padding: 2px 12px;
-  margin: 0 10px 0 0; font-weight: bold; font-size: 1.1em;
-}
-.panel-time { font-size: 1.1em; }
-.sens-title {
-  font-size: 1.1em;
+.panel-arrival {
+  font-size: 1.18em;
   font-weight: bold;
   color: #ffd900;
-  margin-top: 18px;
-  margin-bottom: 8px;
+  width: 100%;
+  font-family: 'Roboto Mono', 'Menlo', monospace;
 }
-.panel-stops { padding: 0 24px 10px 24px; }
-.panel-stop {
-  display: flex; align-items: center; margin-bottom: 10px;
-  border-bottom: 1px solid #eee2; padding-bottom: 8px;
+.panel-stopname {
+  font-size: 1.13em;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #0005;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
 }
-.panel-stop:last-child { border-bottom: none; }
-.panel-arrival { font-size: 1.2em; font-weight: bold; color: #ffd900; width: 85px; }
-.panel-stopname { font-size: 1.1em; font-weight: bold; flex: 1; }
-.panel-modes img { height: 24px; margin-right: 6px; vertical-align: middle; }
-.status.warning { color: #b91c1c; font-weight: bold; background: #ffeef0; border-radius: 10px; padding: 4px 9px;}
+.panel-dest {
+  font-size: 1em;
+  color: #a7e1ff;
+  font-style: italic;
+  letter-spacing: 0.2px;
+  margin-bottom: 2px;
+}
+.panel-voie {
+  display: inline-block;
+  min-width: 1.1em;
+  border: 0.08em solid #ccc;
+  border-radius: 3px;
+  font-size: 120%;
+  background: #fff;
+  color: #0c5da5;
+  font-weight: bold;
+  padding: 0 7px;
+  margin-left: 1em;
+  letter-spacing: -1px;
+}
+.panel-stop.delayed {
+  background: #ff9800 !important;
+  color: #fff;
+}
+.panel-stop.delayed .panel-arrival,
+.panel-stop.delayed .panel-stopname,
+.panel-stop.delayed .panel-dest {
+  color: #fff3e0 !important;
+}
+.retard-badge {
+  font-size: 0.85em;
+  color: #fff;
+  background: #ff9800;
+  border-radius: 6px;
+  padding: 2px 7px;
+  margin-left: 5px;
+  font-weight: bold;
+}
+.panel-stop.canceled {
+  background: #b40404 !important;
+  color: #fff !important;
+}
+.panel-stop.canceled .panel-arrival,
+.panel-stop.canceled .panel-stopname,
+.panel-stop.canceled .panel-dest {
+  color: #ffd1d1 !important;
+  text-decoration: line-through;
+}
+.canceled-badge {
+  font-size: 0.85em;
+  color: #fff;
+  background: #b40404;
+  border-radius: 6px;
+  padding: 2px 7px;
+  margin-left: 5px;
+  font-weight: bold;
+}
+.panel-stop:not(.delayed):not(.canceled) .panel-arrival {
+  color: #ffd900;
+}
+
+/* Desserte (liste des arrêts à venir) */
+.panel-desserte {
+  margin-top: 0.3em;
+  font-size: 1em;
+  color: #86b3de;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+}
+.panel-desserte .gare {
+  font-weight: 500;
+  margin-right: 0.3em;
+}
+.panel-desserte .sep {
+  color: #ffd900;
+  font-weight: bold;
+  margin: 0 0.35em;
+}
+.panel-stop .panel-desserte marquee {
+  width: 100%;
+  display: inline-block;
+}
+
+/* Responsive */
 @media (max-width: 750px) {
-  .dashboard-grid { grid-template-columns: 1fr; gap: 4vw; }
-  .dashboard-card { padding: 0; }
-  .panel-header { font-size: 1em; padding: 7px 8px; }
-  .panel-stops { padding: 0 8px 8px 8px; }
-  .panel-arrival { font-size: 1em; width: 55px;}
-  .panel-stopname { font-size: 1em; }
+  .panel-stopname, .panel-arrival { font-size: 1em; }
+  .panel-dest { font-size: 0.95em; }
 }
