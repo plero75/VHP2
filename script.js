@@ -38,7 +38,7 @@ const PANELS = [
 // --- Vélib config ---
 const velibStations = [
   { code: "12163", container: "velib-station1", name: "Hippodrome Paris-Vincennes" },
-  { code: "12168", container: "velib-station2", name: "Pyramide - Ecole du Breuil" }
+  { code: "12128", container: "velib-station2", name: "Pyramide - Ecole du Breuil" }
 ];
 
 // --- Vélib affichage propre ---
