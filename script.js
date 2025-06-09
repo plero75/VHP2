@@ -52,9 +52,7 @@ async function renderPanel(panel) {
     return;
   }
 
-  // Regroupement par sens (on compare la destination, insensible à la casse)
   let stopsByDir = panel.directions.map(dir => {
-    // Pour chaque sens, sélectionne les passages dont la destination matche
     const stops = visits
       .filter(v => {
         const dest =
@@ -66,6 +64,7 @@ async function renderPanel(panel) {
       .slice(0, 3)
       .map(v => {
         const call = v.MonitoredVehicleJourney?.MonitoredCall || {};
+        const onward = v.MonitoredVehicleJourney?.OnwardCalls?.OnwardCall || [];
         const stopName =
           call.StopPointName?.[0]?.value ||
           call.StopPointName?.value ||
@@ -74,50 +73,79 @@ async function renderPanel(panel) {
           v.MonitoredVehicleJourney?.DestinationName?.[0]?.value ||
           call.DestinationDisplay?.[0]?.value ||
           "?";
-        const aimed = call.ExpectedArrivalTime || call.AimedArrivalTime;
-        const dt = aimed ? new Date(aimed) : null;
-        const mins = dt ? Math.round((dt - new Date()) / 60000) : null;
+        const aimed = call.AimedArrivalTime || call.AimedDepartureTime;
+        const expected = call.ExpectedArrivalTime || call.ExpectedDepartureTime;
+        const dtAimed = aimed ? new Date(aimed) : null;
+        const dtExpected = expected ? new Date(expected) : null;
+        const mins = dtExpected && dtAimed ? Math.round((dtExpected - new Date()) / 60000) : null;
+        const isDelayed = dtAimed && dtExpected && (dtExpected - dtAimed > 2 * 60000);
+        const isCanceled = v.MonitoredVehicleJourney?.TrainStatus === "cancelled"
+          || v.MonitoredVehicleJourney?.JourneyNote?.some(note =>
+              (note.value || "").toLowerCase().includes("supprim"));
+        const voie = v.MonitoredVehicleJourney?.TrainNumbers?.[0]?.TrainNumber || call.ArrivalPlatformName?.[0]?.value || "";
+
+        // Liste des arrêts à venir (OnwardCalls)
+        const allStops = onward.map(oc =>
+          oc.StopPointName?.[0]?.value || oc.StopPointName?.value || "?"
+        );
+        if (allStops.length === 0 && stopName !== "?") allStops.unshift(stopName);
+
+        let stopClass = "panel-stop";
+        if (isCanceled) stopClass += " canceled";
+        else if (isDelayed) stopClass += " delayed";
+
         return `
-          <div class="panel-stop">
-            <span class="panel-arrival">${mins !== null ? (mins > 0 ? `${mins} min` : "à l'instant") : "?"}</span>
-            <span class="panel-stopname">${stopName}</span>
+          <div class="${stopClass}">
+            <span class="panel-arrival">
+              ${mins !== null ? (mins > 0 ? `${mins} min` : "à l'instant") : "?"}
+              ${isDelayed && !isCanceled ? '<span class="retard-badge">retard</span>' : ""}
+              ${isCanceled ? '<span class="canceled-badge">supprimé</span>' : ""}
+            </span>
+            <span class="panel-stopname">
+              ${stopName}
+              ${voie ? `<span class="panel-voie">${voie}</span>` : ""}
+            </span>
             <span class="panel-dest">→ ${dest}</span>
+            ${allStops.length > 0 ? `
+              <div class="panel-desserte">
+                <marquee behavior="scroll" direction="left" scrollamount="5">
+                  ${allStops.map(s => `<span class="gare">${s}</span>`).join('<span class="sep"> • </span>')}
+                </marquee>
+              </div>
+            ` : ""}
           </div>
         `;
       }).join("");
     return { name: dir.name, stops: stops };
   });
 
-  // L’heure du panneau
   const now = new Date();
   const heure = now.toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' });
 
-  // Affichage du panneau
   container.innerHTML = `
-    <div class="panel-header" style="background: #222; color: #fff; font-size: 1.18em; font-weight: bold; padding: 12px 24px; border-radius: 18px 18px 0 0; display:flex;align-items:center;justify-content:space-between;">
-      <img src="${panel.icon}" class="panel-icon" alt="${panel.line}" style="height:38px; margin-right:12px;"/>
-      <span class="panel-line" style="background:${panel.color}; color:#fff; border-radius:8px; padding:2px 12px; margin:0 10px 0 0; font-weight:bold; font-size:1.1em;">${panel.line}</span>
+    <div class="panel-header">
+      <img src="${panel.icon}" class="panel-icon" alt="${panel.line}"/>
+      <span class="panel-line" style="background:${panel.color};">${panel.line}</span>
       ${panel.line}
       <span class="panel-time" id="${panel.id}-heure">${heure}</span>
     </div>
-    <div class="panel-stops" style="padding:0 24px 10px 24px;">
+    <div class="panel-stops">
       ${stopsByDir.map(dir =>
         `<div>
-          <div class="sens-title" style="font-size:1.1em;font-weight:bold;color:#ffd900;margin-top:18px;margin-bottom:8px;">${dir.name}</div>
+          <div class="sens-title">${dir.name}</div>
           ${dir.stops || `<div class="status warning">Aucun passage imminent</div>`}
         </div>`).join("")}
     </div>
   `;
 }
 
-// Rafraîchit tous les panneaux toutes les 60s
+// Rafraîchissement et heure
 function renderAllPanels() {
   for(const panel of PANELS) renderPanel(panel);
 }
 setInterval(renderAllPanels, 60000);
 renderAllPanels();
 
-// Met à jour l'heure sur chaque panneau chaque seconde
 setInterval(() => {
   const now = new Date().toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' });
   for(const panel of PANELS) {
