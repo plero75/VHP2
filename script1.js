@@ -19,6 +19,25 @@ const STOP_POINTS = {
     icon: "img/picto-bus.svg"
   }
 };
+async function fetchTrafficRoad() {
+  const url = "https://data.cerema.fr/api/records/1.0/search/?dataset=etat-trafic-rn&rows=50&refine.zone_nom=Île-de-France";
+  try {
+    const data = await fetchJSON(url);
+    const routes = data.records
+      .filter(r => ["A86", "BP"].includes(r.fields.route_nom))
+      .map(r => ({
+        troncon: r.fields.libelle_troncon,
+        etat: r.fields.etat_trafic,
+        couleur: r.fields.couleur
+      }));
+
+    let html = `<div class='title-line'><img src='img/picto-car.svg' class='icon-inline'>Trafic routier</div>`;
+    html += routes.map(r => `<div><span style="color:${r.couleur}">●</span> ${r.troncon} : ${r.etat}</div>`).join("");
+    document.getElementById("trafic-road").innerHTML = html;
+  } catch (e) {
+    document.getElementById("trafic-road").innerHTML = "<b>Trafic routier indisponible</b>";
+  }
+}
 
 const VELIB_IDS = {
   vincennes: "1074333296",
