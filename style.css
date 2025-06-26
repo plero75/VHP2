@@ -40,6 +40,13 @@
   font-weight: 700;
   margin-right: 0.5em;
 }
+.trafic-card iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  min-height: 300px;
+}
+
 .panel-arrival { font-size: 1.2em; font-weight: bold; }
 .panel-stopname { font-size: 1.1em; }
 .panel-dest { font-style: italic; color: #fff8; margin-left: 0.5em; }
