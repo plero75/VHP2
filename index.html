@@ -1,48 +1,55 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Panneau Mobilités Hippodrome</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="img/picto-rer-a.svg">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VHP3 – Horaires & Infos Temps Réel</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="dashboard">
-    <header class="dashboard-header">
-      <div class="datetime-alert-zone">
-        <div id="datetime" class="datetime-big">
-          <span id="current-date"></span>
-          <span id="current-time"></span>
-        </div>
-        <div id="traffic-alert" class="traffic-alert hidden"></div>
-      </div>
-    </header>
-    
-    <section class="dashboard-grid">
-      <div id="velib-vincennes" class="dashboard-card velib-card"></div>
-      <div id="velib-breuil" class="dashboard-card velib-card"></div>
-      <div class="dashboard-card rer-card" id="rer-content"></div>
-      <div class="dashboard-card bus-card" id="bus77-content"></div>
-      <div class="dashboard-card bus-card" id="bus201-content"></div>
-      <div class="dashboard-card meteo-card" id="weather-content"></div>
-      <div class="dashboard-card motjour-card" id="motjour-card"></div>
-      <div class="dashboard-card meteo-hours-card" id="meteo-hours-card"></div>
-<div class="dashboard-card traffic-card" id="trafic-road"></div>
 
-  <iframe 
-    src="https://www.sytadin.fr/sytadin/sytadin_carte" 
-    width="100%" 
-    height="300" 
-    style="border:none;" 
-    title="Carte trafic Sytadin"></iframe>
-</div>
-      
+  <header>
+    <div class="header-left">
+      <img src="assets/logo.png" alt="Logo Hippodrome" class="logo"/>
+      <h1>VHP3 – Temps Réel à Vincennes</h1>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#schedules">Horaires</a></li>
+        <li><a href="#traffic">Trafic</a></li>
+        <li><a href="#velib">Vélib’</a></li>
+        <li><a href="#weather">Météo</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="schedules">
+      <h2>Horaires des Prochains Passages</h2>
+      <!-- Les horaires dynamiques seront injectés ici -->
     </section>
-    <footer class="dashboard-footer">
-      Mise à jour : <span id="last-update"></span>
-    </footer>
+
+    <section id="traffic">
+      <h2>Infos Trafic</h2>
+      <div class="info-box">⚠️ Chargement des informations trafic en cours...</div>
+    </section>
+
+    <section id="velib">
+      <h2>Disponibilité Vélib’</h2>
+      <div class="info-box">🚲 Données Vélib’ à venir…</div>
+    </section>
+
+    <section id="weather">
+      <h2>Météo Locale</h2>
+      <div class="info-box">☀️ Prévisions météo en cours de chargement…</div>
+    </section>
   </main>
-  <script src="script1.js"></script>
+
+  <footer>
+    <p>&copy; 2025 VHP3 – Données fournies par Île-de-France Mobilités. Tous droits réservés.</p>
+    <p><a href="/mentions-legales.html">Mentions légales</a> | <a href="/contact.html">Contact</a></p>
+  </footer>
+
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
