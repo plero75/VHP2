@@ -1,59 +1,140 @@
-.velib-header {
-  font-weight: bold;
-  padding-bottom: 2px;
-  font-size: 1.1em;
-}
-.velib-nom { font-size: 1.07em; }
-.velib-infos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 2px;
-  font-size: 1.07em;
-}
-.velib-item { background: #17345d; border-radius: 7px; padding: 2px 8px; color: #fff; }
-.panel-desserte {
-  margin-top: 4px;
-  overflow: hidden;
-  height: 1.7em;
-}
-.desserte-scroll {
-  display: inline-block;
-  white-space: nowrap;
-  animation: scroll-desserte 12s linear infinite;
-}
-@keyframes scroll-desserte {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-60%); }
-}
-.gare { font-weight: 500; color: #fff5; }
-.sep { color: #fff9; margin: 0 5px; }
-.panel-header img.panel-icon {
-  height: 1.5em;
-  vertical-align: middle;
-  margin-right: 0.5em;
-}
-.panel-line {
-  padding: 0.1em 0.5em;
-  border-radius: 0.6em;
-  color: #fff;
-  font-weight: 700;
-  margin-right: 0.5em;
-}
-.trafic-card iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  min-height: 300px;
+/* Général */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: #f8f9fa;
+  color: #333;
 }
 
-.panel-arrival { font-size: 1.2em; font-weight: bold; }
-.panel-stopname { font-size: 1.1em; }
-.panel-dest { font-style: italic; color: #fff8; margin-left: 0.5em; }
-.retard-badge { color: #222; background: #ffc107; border-radius: 4px; padding: 0 5px; margin-left: 8px; }
-.canceled-badge { color: #fff; background: #d32f2f; border-radius: 4px; padding: 0 5px; margin-left: 8px; }
-.sens-title { font-weight: bold; margin: 7px 0 2px 0; }
-.panel-stop { background: #073c6b; margin-bottom: 8px; border-radius: 8px; padding: 8px; color: #fff; }
-.panel-stop.delayed { background: #ffa600; color: #222; }
-.panel-stop.canceled { background: #b71c1c; color: #fff; }
-.status.warning { color: #fff; background: #e57373; border-radius: 5px; padding: 4px 7px; margin: 4px 0; }
+h1, h2 {
+  margin: 0.5em 0;
+}
+
+section {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+/* Header sticky */
+header {
+  position: sticky;
+  top: 0;
+  background: #004080;
+  color: white;
+  padding: 0.8rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-left img.logo {
+  height: 40px;
+  margin-right: 1rem;
+}
+
+header h1 {
+  font-size: 1.2rem;
+}
+
+/* Menu navigation */
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive menu */
+@media (max-width: 600px) {
+  nav ul {
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+}
+
+/* Info box placeholder */
+.info-box {
+  padding: 1rem;
+  text-align: center;
+  font-size: 1rem;
+  color: #555;
+  background: #f1f1f1;
+  border-radius: 6px;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  font-size: 0.9rem;
+  background: #004080;
+  color: white;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+footer a {
+  color: #ddd;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Loader */
+.loader {
+  text-align: center;
+  font-size: 1.2rem;
+  padding: 1rem;
+}
+
+/* Cartes horaires */
+.line-card {
+  background: white;
+  margin: 1rem 0;
+  padding: 1rem;
+  border-left: 6px solid #004080;
+  border-radius: 6px;
+}
+
+.line-card h2 {
+  font-size: 1.1rem;
+  color: #004080;
+}
+
+.line-card ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.line-card li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.line-card li:last-child {
+  border-bottom: none;
+}
