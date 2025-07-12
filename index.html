@@ -1,55 +1,59 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VHP3 – Horaires & Infos Temps Réel</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Vincennes</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="script.js" defer></script>
 </head>
 <body>
+  <div id="dashboard">
+    <header>
+      <div id="logo-block">
+        <img src="logo-vincennes.png" alt="Hippodrome de Vincennes" id="logo">
+        <h1>Infos Transports & Météo</h1>
+      </div>
+      <div id="datetime"></div>
+    </header>
 
-  <header>
-    <div class="header-left">
-      <img src="assets/logo.png" alt="Logo Hippodrome" class="logo"/>
-      <h1>VHP3 – Temps Réel à Vincennes</h1>
-    </div>
-    <nav>
-      <ul>
-        <li><a href="#schedules">Horaires</a></li>
-        <li><a href="#traffic">Trafic</a></li>
-        <li><a href="#velib">Vélib’</a></li>
-        <li><a href="#weather">Météo</a></li>
-      </ul>
-    </nav>
-  </header>
+    <main>
+      <div class="row">
+        <section class="block" id="rer-block">
+          <h2>🚆 RER A – Joinville-le-Pont</h2>
+          <div id="rer-schedules" class="schedules"></div>
+          <div id="rer-traffic" class="traffic-banner"></div>
+        </section>
 
-  <main>
-    <section id="schedules">
-      <h2>Horaires des Prochains Passages</h2>
-      <!-- Les horaires dynamiques seront injectés ici -->
-    </section>
+        <section class="block" id="bus77-block">
+          <h2>🚌 Bus 77 – Hippodrome de Vincennes</h2>
+          <div id="bus77-schedules" class="schedules"></div>
+          <div id="bus77-traffic" class="traffic-banner"></div>
+        </section>
 
-    <section id="traffic">
-      <h2>Infos Trafic</h2>
-      <div class="info-box">⚠️ Chargement des informations trafic en cours...</div>
-    </section>
+        <section class="block" id="bus201-block">
+          <h2>🚌 Bus 201 – École du Breuil</h2>
+          <div id="bus201-schedules" class="schedules"></div>
+          <div id="bus201-traffic" class="traffic-banner"></div>
+        </section>
+      </div>
 
-    <section id="velib">
-      <h2>Disponibilité Vélib’</h2>
-      <div class="info-box">🚲 Données Vélib’ à venir…</div>
-    </section>
+      <div class="row">
+        <section class="block" id="weather-block">
+          <h2>🌤 Météo</h2>
+          <div id="weather">Chargement météo…</div>
+        </section>
 
-    <section id="weather">
-      <h2>Météo Locale</h2>
-      <div class="info-box">☀️ Prévisions météo en cours de chargement…</div>
-    </section>
-  </main>
+        <section class="block" id="news-block">
+          <h2>📰 Dernières actus</h2>
+          <div id="news-banner-content">Chargement…</div>
+        </section>
+      </div>
+    </main>
 
-  <footer>
-    <p>&copy; 2025 VHP3 – Données fournies par Île-de-France Mobilités. Tous droits réservés.</p>
-    <p><a href="/mentions-legales.html">Mentions légales</a> | <a href="/contact.html">Contact</a></p>
-  </footer>
-
-  <script type="module" src="js/main.js"></script>
+    <footer>
+      <p>© 2025 Hippodrome de Vincennes – Données IDFM via PRIM</p>
+    </footer>
+  </div>
 </body>
 </html>
